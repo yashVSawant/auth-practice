@@ -1,14 +1,19 @@
-import { useState } from 'react';
+import { useState ,useContext } from 'react';
+
+import {useNavigate} from "react-router-dom"
 
 import classes from './AuthForm.module.css';
 
 import api from '../../services/api';
+import AuthContext from '../../store/auth-context';
 
 const AuthForm = () => {
+  const navigate = useNavigate()
+  const authContext = useContext(AuthContext);
   const userObj = {email:"", name:"yash" ,password:""}
   const [isLogin, setIsLogin] = useState(true);
   const [loading ,setLoading] = useState(false);
-  const [user , setUser] = useState(userObj)
+  const [user , setUser] = useState(userObj);
 
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
@@ -20,7 +25,10 @@ const AuthForm = () => {
 
       if(isLogin){
         const userResponse = await api.post("api/auth/login",{...user});
-        localStorage.setItem("token" ,userResponse.data.token);
+        console.log(userResponse)
+        const token = userResponse.data.token
+        authContext.addToken(token);
+        navigate("/")
       }
       else {
         await api.post("/api/auth/register",{...user});
@@ -30,6 +38,7 @@ const AuthForm = () => {
       
     } catch (err) {
       setLoading(false);
+      console.log(err)
       const errorMessage = err.response.data.message
       alert(errorMessage)
     }

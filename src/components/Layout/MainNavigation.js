@@ -1,8 +1,16 @@
+import React ,{useContext} from 'react';
 import { Link } from 'react-router-dom';
 
 import classes from './MainNavigation.module.css';
+import AuthContext from '../../store/auth-context';
 
 const MainNavigation = () => {
+  const authContext = useContext(AuthContext);
+
+  const logoutClickHandler = ()=>{
+    authContext.removeToken();
+  }
+  
   return (
     <header className={classes.header}>
       <Link to='/'>
@@ -10,15 +18,15 @@ const MainNavigation = () => {
       </Link>
       <nav>
         <ul>
-          <li>
+          {!authContext.isAuthenticated && <li>
             <Link to='/auth'>Login</Link>
-          </li>
-          <li>
+          </li>}
+          {authContext.isAuthenticated &&<li>
             <Link to='/profile'>Profile</Link>
-          </li>
-          <li>
-            <button>Logout</button>
-          </li>
+          </li>}
+          {authContext.isAuthenticated &&<li>
+            <button onClick={logoutClickHandler}>Logout</button>
+          </li>}
         </ul>
       </nav>
     </header>
