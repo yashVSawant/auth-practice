@@ -2,8 +2,10 @@ import React ,{useState ,useContext} from 'react';
 import classes from './ProfileForm.module.css';
 import api from '../../services/api';
 import AuthContext from '../../store/auth-context';
+import { useNavigate } from 'react-router-dom';
 
 const ProfileForm = () => {
+  const navigate = useNavigate();
   const AuthCtx = useContext(AuthContext);
   const [password ,setPassword] = useState("");
 
@@ -15,11 +17,13 @@ const ProfileForm = () => {
   const onChangePasswordClickHandler = async(event)=>{
     event.preventDefault();
     try {
-      const response =  await api.put("/api/auth/password/reset",{password : password}).headers({"Authorization":AuthCtx.token});
-      console.log(response)
+      const response =  await api.put("/api/auth/password/reset",{password : password},{headers:{"Authorization":AuthCtx.token}})
+      const token = response.data.token;
+      AuthCtx.addToken(token);
       setPassword("");
+      navigate("/");
     } catch (error) {
-      
+      console.log(error)
     }
     
   }
