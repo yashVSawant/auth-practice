@@ -6,7 +6,7 @@ const AuthProvider = (props)=>{
     const [token ,setToken] = useState("");
     const [isAuthenticated ,setIsAuthenticated] = useState(false);
     const addTokenHandler = (tokenValue)=>{
-        setToken(tokenValue);
+        setToken("Bearer "+tokenValue);
         setIsAuthenticated(true)
     }
 
